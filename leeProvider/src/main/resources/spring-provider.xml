@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+        <!--配置应用名称，名称要唯一-->
+    <dubbo:application name="provider"></dubbo:application>
+
+    <!--管理注册中心-->
+    <dubbo:registry protocol="zookeeper" address="192.168.25.133" port="2181"></dubbo:registry>
+
+    <!--管理实现类，就像扫描组件-->
+    <!--<bean class="com.lee.dubbo.service.impl.TestServiceImpl" id="testService" ></bean>-->
+
+    <!--配置暴露服务-->
+    <!--<dubbo:service interface="com.lee.dubbo.service.TestService" ref="testService"></dubbo:service>-->
+
+    <!--使用dubbo的注解扫描方式-->
+    <dubbo:annotation package="com.lee.dubbo.service"></dubbo:annotation>
+
+    <!--增加暴露服务的端口  可以不配置，默认就是使用20880-->
+    <dubbo:protocol name="dubbo" port="20880"></dubbo:protocol>
+
+</beans>

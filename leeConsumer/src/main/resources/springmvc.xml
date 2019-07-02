@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:dubboo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+   <!-- &lt;!&ndash;组件扫描&ndash;&gt;
+    <context:component-scan base-package="com.lee.dubbo.controller"></context:component-scan>
+
+    &lt;!&ndash;注解驱动&ndash;&gt;
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+    &lt;!&ndash;dubbo的配置&ndash;&gt;
+    &lt;!&ndash;dubbo的应用名称&ndash;&gt;
+    <dubbo:application name="consumer"></dubbo:application>
+
+    &lt;!&ndash;dubbo的对应的注册中心&ndash;&gt;
+    <dubbo:registry protocol="192.168.25.133" port="2181"></dubbo:registry>
+
+    &lt;!&ndash;增加引用远程服务配置，将管理接口代理对象，交给spring容器&ndash;&gt;
+   <dubboo:reference interface="com.lee.dubbo.service.TestService" id="testService"></dubboo:reference>
+    -->
+
+
+    <!--配置应用名称唯一-->
+    <dubbo:application name="dubbo-consumer"></dubbo:application>
+    <!--注册中心地址-->
+    <dubbo:registry protocol="zookeeper" address="192.168.25.133" port="2181"></dubbo:registry>
+
+    <!--使用dubbo扫描注解@reference所在包-->
+    <dubbo:annotation package="com.lee.dubbo.controller"></dubbo:annotation>
+
+    <!--spring组件扫描-->
+    <context:component-scan base-package="com.lee.dubbo.controller"></context:component-scan>
+
+    <!--注解驱动-->
+    <mvc:annotation-driven></mvc:annotation-driven>
+
+</beans>
