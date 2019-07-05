@@ -9,7 +9,7 @@ import com.pinyougou.sellergoods.service.ItemCatService;
 import com.github.pagehelper.PageInfo;
 import entity.Result;
 /**
- * controller
+ * controller  商品分类表
  * @author Administrator
  *
  */

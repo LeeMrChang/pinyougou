@@ -8,7 +8,9 @@
         ids:[],
         searchEntity:{},
         //根据广告分类的id查询到的广告列表的数据，绑定广告列表数据
-        contentList:[]
+        contentList:[],
+        //关键字变量
+        keywords:'',
     },
     methods: {
         searchList:function (curPage) {
@@ -110,6 +112,14 @@
             }).catch(function (error) {
                 alert(error)
             });
+        },
+
+        //定义一个点击此函数从首页跳转到根据此关键字搜索到的搜索页面
+        doSearch:function () {
+            //因为是页面的路径跳转携带参数，所以需要先将携带的中文参数进行转码
+            var keywordsx = encodeURIComponent(this.keywords);
+
+            window.location.href="http://localhost:9104/search.html?keywords="+keywordsx;
         }
 
 

@@ -14,6 +14,8 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import com.pinyougou.core.service.CoreServiceImpl;
 
+import org.springframework.data.redis.core.RedisAccessor;
+import org.springframework.data.redis.core.RedisTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 import com.pinyougou.mapper.TbTypeTemplateMapper;
@@ -59,9 +61,17 @@ public class TypeTemplateServiceImpl extends CoreServiceImpl<TbTypeTemplate>  im
         return pageInfo;
     }
 
-	
-	
 
+    @Autowired  //注入redis模板
+    private RedisTemplate redisTemplate;
+
+    /**
+     * 分页查询方法
+     * @param pageNo 当前页 码
+     * @param pageSize 每页记录数
+     * @param typeTemplate
+     * @return
+     */
 	 @Override
     public PageInfo<TbTypeTemplate> findPage(Integer pageNo, Integer pageSize, TbTypeTemplate typeTemplate) {
         PageHelper.startPage(pageNo,pageSize);
@@ -94,8 +104,34 @@ public class TypeTemplateServiceImpl extends CoreServiceImpl<TbTypeTemplate>  im
         String s = JSON.toJSONString(info);
         PageInfo<TbTypeTemplate> pageInfo = JSON.parseObject(s, PageInfo.class);
 
+         //将模板数据也存储到redis中，因为每次分类列表做完增删查改的情况下都要刷新页面
+
+         //1.先获取模板的数据
+         List<TbTypeTemplate> list = this.findAll();
+
+         //2.循环遍历模板的数据
+         for (TbTypeTemplate template : list) {
+             //3.把数据存储到redis中
+             String brandIds = template.getBrandIds();//在数据库中是jSOn字符串
+             List<Map> mapList = JSON.parseArray(brandIds, Map.class);
+             //设置模板数据的key  值为模板的id与模板的品牌名称列表   //
+                redisTemplate.boundHashOps("brandList").put(template.getId(),mapList);
+
+                //规格列表的存储
+             //这个是根据模板id获取规格列表的数据。调用下面的findSpecList方法，且此方法也帮助将数据转成json对象了
+             List<Map> specList = findSpecList(template.getId());
+
+             //String specIds = template.getSpecIds(); //[{id:'1',"text":'网络',option[]}]
+             redisTemplate.boundHashOps("specList").put(template.getId(),specList);
+         }
+
+
+
+
         return pageInfo;
     }
+
+
 
     /**
      * 根据模块id查询出模板对象，再根据模板的spec_ids，查询出规格的数据

@@ -37,6 +37,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--需要依赖search的接口来进行ES数据的同步更新，搜索服务的接口-->
+        <dependency>
+            <groupId>com.pinyougou</groupId>
+            <artifactId>pinyougou-search-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!--因为也算属于一种消费者形式，有dubbo,也有spring,需要依赖common-->
         <dependency>
             <groupId>com.pinyougou</groupId>

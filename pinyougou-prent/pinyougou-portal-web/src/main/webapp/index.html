@@ -65,9 +65,10 @@
 						<div class="search">
 							<form action="" class="sui-form form-inline">
 								<!--searchAutoComplete-->
-								<div class="input-append">
-									<input type="text" id="autocomplete" type="text" class="input-error input-xxlarge" />
-									<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+								<div class="input-append"><!--绑定关键字-->
+									<input type="text" id="autocomplete" v-model="keywords" type="text" class="input-error input-xxlarge" />
+                                    <!--在首页搜索的时候绑定一个点击从首页跳转到该关键字搜索到的页面-->
+									<button class="sui-btn btn-xlarge btn-danger" @click="doSearch()" type="button">搜索</button>
 								</div>
 							</form>
 						</div>

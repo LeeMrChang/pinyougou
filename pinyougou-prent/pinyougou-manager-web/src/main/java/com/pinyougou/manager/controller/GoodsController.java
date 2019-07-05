@@ -3,6 +3,8 @@ package com.pinyougou.manager.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
+import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.Goods;
 import entity.Result;
@@ -20,9 +22,13 @@ import java.util.List;
 @RequestMapping("/goods")
 public class GoodsController {
 
-	@Reference
+	@Reference  //SPU
 	private GoodsService goodsService;
-	
+
+
+	@Reference   //SKU
+    private ItemSearchService itemSearchService;
+
 	/**
 	 * 返回全部列表
 	 * @return
@@ -100,7 +106,18 @@ public class GoodsController {
 	@RequestMapping("/delete")
 	public Result delete(@RequestBody Long[] ids){
 		try {
+		    //删除数据库
 			goodsService.delete(ids);
+			//获取被删除的SKU的数据
+
+
+            //将这些SKU的数据从ES中移除掉，需要类似前面更新保存一般根据ids(多个id)进行删除
+            //根据SPU的ID数组
+            itemSearchService.deleteByIds(ids);
+
+
+
+
 			return new Result(true, "删除成功"); 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -125,7 +142,7 @@ public class GoodsController {
     //需要创建一个新的修改方法，批量修改商品的状态，根据商品id
 
     /**
-     *
+     *  //在这个方法中审核商品，更新状态的值，使用数据库与ES的数据同步
      * @param   ，使用数组接收
      * @param status  要修改的状态的参数
      * @return
@@ -135,6 +152,23 @@ public class GoodsController {
 
         try {
             goodsService.updateStatus( ids,status);
+
+            //做一个判断。只能是审核通过的时候才进行更新保存的操作
+            if("1".equals(status)){
+                //1.获取被审核的先通过SPU  获取到SPU的商品的数据
+                List<TbItem> itemList = goodsService.findTbItemListByIds(ids);
+
+
+
+                //2.将被审核的SKU的商品 的数据 更新到ES中
+
+                //2.1引入search的服务
+
+                //2.2调用更新索引的方法,将更新后的数据传入到ES的索引中更新,此方法内部再做保存更新数据到ES服务中的操作
+                itemSearchService.updateIndex(itemList);
+            }
+
+
             return new Result(true,"更新成功！！");
         } catch (Exception e) {
             e.printStackTrace();

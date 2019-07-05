@@ -368,6 +368,29 @@ public class GoodsServiceImpl extends CoreServiceImpl<TbGoods> implements GoodsS
     }
 
     /**
+     * 根据SPU(主键的数组)的ids数据对象查询所有的该商品的列表SKU数据
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<TbItem> findTbItemListByIds(Long[] ids) {
+
+        //select * from tb_item where goods_id in (1,2,3)
+        //根据数组对象ids的条件进行查询SKU列表的数据信息
+        Example example = new Example(TbItem.class);
+        //创建查询条件
+        Example.Criteria criteria = example.createCriteria();
+        //根据item表中的goods_id的字段进行查询,数据类型的参数需要转换
+        criteria.andIn("goodsId",Arrays.asList(ids));
+        //判断此商品的安全状态是否可以上架，业务需要
+        criteria.andEqualTo("status",1);
+
+        return itemMapper.selectByExample(example);
+
+    }
+
+    /**
      * 根据主键ID删除对应的pojo对象
      *批量删除，逻辑删除
      * 逻辑删除的点击按钮，逻辑删除，数据不能根本地删除某个字段的值，只能修改某个字段的状态

@@ -11,9 +11,6 @@
     http://www.springframework.org/schema/aop
     http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!-- 引入-->
-    <import resource="classpath:spring/applicationContext-service.xml"></import>
-    <import resource="classpath:spring/applicationContext-dao.xml"></import>
 
     <!-- 配置事务管理器 -->
     <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
@@ -38,6 +35,12 @@
         <aop:advisor advice-ref="txAdvice" pointcut="execution
         (* com.pinyougou.sellergoods.service.impl.*.*(..))"/>
     </aop:config>
+
+
+    <!-- 引入-->
+    <import resource="classpath:spring/applicationContext-service.xml"></import>
+    <import resource="classpath:spring/applicationContext-dao.xml"></import>
+    <import resource="classpath:spring/applicationContext-redis.xml"></import>
 
 
 </beans>
