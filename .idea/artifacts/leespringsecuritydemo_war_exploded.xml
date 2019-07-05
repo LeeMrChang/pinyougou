@@ -1,0 +1,23 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="leespringsecuritydemo:war exploded">
+    <output-path>$PROJECT_DIR$/pinyougou-prent/lee-spring-security-demo/target/lee-spring-security-demo</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <exploded>true</exploded>
+        <module>leespringsecuritydemo</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="leespringsecuritydemo" />
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/leeProvider/lee-spring-security-demo/target/lee-spring-security-demo/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="leespringsecuritydemo/web/Web" />
+    </root>
+  </artifact>
+</component>

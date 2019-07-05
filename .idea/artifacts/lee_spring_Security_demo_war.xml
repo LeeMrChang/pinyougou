@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="lee-spring-Security-demo:war">
+    <output-path>$PROJECT_DIR$/pinyougou-prent/lee-spring-Security-demo/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>lee-spring-Security-demo</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="itheima-spring-security.war">
+      <element id="artifact" artifact-name="lee-spring-Security-demo:war exploded" />
+    </root>
+  </artifact>
+</component>

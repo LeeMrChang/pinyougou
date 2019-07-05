@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="leeProvider:war">
+    <output-path>$PROJECT_DIR$/leeProvider/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>leeProvider</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="itheima-dubbo-provider.war">
+      <element id="artifact" artifact-name="leeProvider:war exploded" />
+    </root>
+  </artifact>
+</component>
