@@ -67,7 +67,13 @@ public class GoodsServiceImpl extends CoreServiceImpl<TbGoods> implements GoodsS
         return pageInfo;
     }
 
-
+    /**
+     *
+     * @param pageNo 当前页 码
+     * @param pageSize 每页记录数
+     * @param goods
+     * @return
+     */
     @Override
     public PageInfo<TbGoods> findPage(Integer pageNo, Integer pageSize, TbGoods goods) {
         PageHelper.startPage(pageNo, pageSize);
@@ -111,6 +117,7 @@ public class GoodsServiceImpl extends CoreServiceImpl<TbGoods> implements GoodsS
             }
 
         }
+        //查询过后的分页展示
         List<TbGoods> all = goodsMapper.selectByExample(example);
         PageInfo<TbGoods> info = new PageInfo<TbGoods>(all);
         //序列化再反序列化
@@ -161,6 +168,8 @@ public class GoodsServiceImpl extends CoreServiceImpl<TbGoods> implements GoodsS
      * @param itemList
      */
     private void saveItems(TbGoods tbGoods, TbGoodsDesc goodsDesc, List<TbItem> itemList) {
+
+        //判断如果为1就是启用规格
         if("1".equals(tbGoods.getIsEnableSpec())){
 
             System.out.println("有规格的添加！！！");

@@ -16,6 +16,7 @@
     <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
+
     <!-- 通知 -->
     <tx:advice transaction-manager="transactionManager" id="txAdvice">
         <tx:attributes>
@@ -30,11 +31,14 @@
             <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
         </tx:attributes>
     </tx:advice>
+
     <!-- 切面 -->
     <aop:config>
+        <!--切点-->
         <aop:advisor advice-ref="txAdvice" pointcut="execution
         (* com.pinyougou.sellergoods.service.impl.*.*(..))"/>
     </aop:config>
+
 
 
     <!-- 引入-->

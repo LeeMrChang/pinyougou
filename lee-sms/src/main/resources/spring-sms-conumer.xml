@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置消费者對象-->
+    <bean class="org.apache.rocketmq.client.consumer.DefaultMQPushConsumer"
+          id="defaultMQPushConsumer" init-method="start" destroy-method="shutdown">
+
+        <!--消费端口号nameserver-->
+        <property name="namesrvAddr" value="127.0.0.1:9876"></property>
+
+        <!--消費者组-->
+        <property name="consumerGroup" value="consumer_page_service_group"></property>
+
+        <!--默认集群模式,改成广播模式-->
+        <property name="messageModel" value="CLUSTERING"></property>
+
+        <!--设置主题，根据主题名称获取值-->
+        <property name="subscription">
+            <map>
+                <!--key:就是topic（主题名称）  value就是标签-->
+                <entry key="SMS_TOPIC" value="*"></entry>
+            </map>
+        </property>
+
+        <!--设置监听器-->
+        <property name="messageListener" ref="messageListener"></property>
+
+    </bean>
+
+    <!--监听器的类-->
+    <bean class="com.lee.sms.listener.SmsMessageListener" id="messageListener"></bean>
+
+
+</beans>

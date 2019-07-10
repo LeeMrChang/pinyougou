@@ -30,19 +30,26 @@
             <scope>test</scope>
         </dependency>
 
-        <!--依赖接口-->
+        <!--依赖接口 sellergoods商品的接口依赖-->
         <dependency>
             <groupId>com.pinyougou</groupId>
             <artifactId>pinyougou-sellergoods-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--依赖page静态生成页面的接口依赖  ，因为引进了rocketmq，所以对这些接口的依赖进行移除-->
+        <!--<dependency>
+            <groupId>com.pinyougou</groupId>
+            <artifactId>pinyougou-page-interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>-->
+
         <!--需要依赖search的接口来进行ES数据的同步更新，搜索服务的接口-->
-        <dependency>
+       <!-- <dependency>
             <groupId>com.pinyougou</groupId>
             <artifactId>pinyougou-search-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
 
         <!--因为也算属于一种消费者形式，有dubbo,也有spring,需要依赖common-->
         <dependency>

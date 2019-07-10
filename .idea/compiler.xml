@@ -7,6 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="lee-elasticsearch-demo" />
+        <module name="lee-freemarker" />
+        <module name="lee-pinyougou-consumer" />
+        <module name="lee-pinyougou-producer" />
+        <module name="lee-sms" />
+        <module name="lee-Sms-demo" />
         <module name="lee-spring-Security-demo" />
         <module name="leeConsumer" />
         <module name="leeProvider" />
@@ -17,6 +22,8 @@
         <module name="pinyougou-dao" />
         <module name="pinyougou-es-import" />
         <module name="pinyougou-manager-web" />
+        <module name="pinyougou-page-interface" />
+        <module name="pinyougou-page-service" />
         <module name="pinyougou-pojo" />
         <module name="pinyougou-portal-web" />
         <module name="pinyougou-search-interface" />
@@ -26,10 +33,18 @@
         <module name="pinyougou-sellergoods-service" />
         <module name="pinyougou-shop-web" />
         <module name="pinyougou-upload-web" />
+        <module name="pinyougou-user-interface" />
+        <module name="pinyougou-user-service" />
+        <module name="pinyougou-user-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lee-elasticsearch-demo" target="1.8" />
+      <module name="lee-freemarker" target="1.8" />
+      <module name="lee-pinyougou-consumer" target="1.8" />
+      <module name="lee-pinyougou-producer" target="1.8" />
+      <module name="lee-sms" target="1.8" />
+      <module name="lee-Sms-demo" target="1.8" />
       <module name="lee-spring-security-demo" target="1.8" />
       <module name="lee-spring-Security-demo" target="1.8" />
       <module name="leeConsumer" target="1.8" />
@@ -42,6 +57,8 @@
       <module name="pinyougou-dao" target="1.8" />
       <module name="pinyougou-es-import" target="1.8" />
       <module name="pinyougou-manager-web" target="1.8" />
+      <module name="pinyougou-page-interface" target="1.8" />
+      <module name="pinyougou-page-service" target="1.8" />
       <module name="pinyougou-pojo" target="1.8" />
       <module name="pinyougou-portal-web" target="1.8" />
       <module name="pinyougou-prent" target="1.8" />
@@ -52,6 +69,9 @@
       <module name="pinyougou-sellergoods-service" target="1.8" />
       <module name="pinyougou-shop-web" target="1.8" />
       <module name="pinyougou-upload-web" target="1.8" />
+      <module name="pinyougou-user-interface" target="1.8" />
+      <module name="pinyougou-user-service" target="1.8" />
+      <module name="pinyougou-user-web" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

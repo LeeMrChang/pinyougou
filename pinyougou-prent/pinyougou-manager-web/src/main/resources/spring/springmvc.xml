@@ -61,5 +61,7 @@
 
     <!--引入安全框架的配置文件spring-security.xml-->
     <import resource="spring-security.xml"></import>
+    <!--引入rocketmq的配置文件-->
+    <import resource="spring-producer.xml"></import>
 
 </beans>

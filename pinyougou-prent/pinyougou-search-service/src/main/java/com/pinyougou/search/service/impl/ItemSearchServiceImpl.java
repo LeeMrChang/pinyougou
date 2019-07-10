@@ -54,7 +54,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     private ElasticsearchTemplate elasticsearchTemplate;
 
     /**
-     * 根据输入的关键字查询对应的数据
+     * 根据输入的关键字查询对应的数据，这里是一个很大的业务查询，基本上首页的全部信息都是根据这个方法查询到的数据做展示的
      *
      * @param searchMap
      * @return
@@ -63,7 +63,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
     public Map<String, Object> search(Map<String, Object> searchMap) {
 
 
-
+        //创建一个map对象，查询出来的所有数据都以map对象形式存进
         Map<String,Object> resultMap = new HashMap<>();
 
 
@@ -89,6 +89,8 @@ public class ItemSearchServiceImpl implements ItemSearchService {
                 .withHighlightFields(new HighlightBuilder.Field("title"))
                 .withHighlightBuilder(highlightBuilder);
 
+
+
         //3.2设置聚合查询的条件  根据商品的分类来聚合查询  根据分类来进行分组field("category")指定分组的字段
         builder.addAggregation(AggregationBuilders.terms("category_group").field("category").size(50));
 
@@ -101,6 +103,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
 
         //获取要过滤的字段（分类字段），这个是页面传过来的
         String category = (String) searchMap.get("category");
+
         //此处必须做一个非空判断，假如在搜索框架什么都不输入的情况下点击搜索
         if(StringUtils.isNotBlank(category)){
             //termQuery(词条)查询分类管理字段  第一个参数表示分类字段，第二个参数表示输入的要过滤的对象
@@ -111,6 +114,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //3.3.2 商品的品牌的过滤查询
         //获取要过滤的品牌字段
         String brand = (String) searchMap.get("brand");
+
         if(StringUtils.isNotBlank(brand)){
             //termQuery(词条)查询分类管理字段  第一个参数表示分类字段，第二个参数表示输入的要过滤的对象
             //此条件作为boolQuery的子条件去进行根据多条件的查询，，filter就是过滤
@@ -120,6 +124,7 @@ public class ItemSearchServiceImpl implements ItemSearchService {
         //3.3.3 规格的过滤查询 获取规格的名称 和规格的值  执行过滤查询
         //此时获取到这样的一个数据格式: {"网络":"移动4G","机身内存":"16G"}
         Map<String,String> spec = (Map<String, String>) searchMap.get("spec");
+
         //非空判断
         if(spec!=null){
               //进行循环遍历

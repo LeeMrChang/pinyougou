@@ -30,6 +30,15 @@
         <module>pinyougou-search-interface</module>
         <module>pinyougou-search-service</module>
         <module>pinyougou-search-web</module>
+        <module>lee-freemarker</module>
+        <module>pinyougou-page-interface</module>
+        <module>pinyougou-page-service</module>
+        <module>lee-pinyougou-producer</module>
+        <module>lee-pinyougou-consumer</module>
+        <module>lee-Sms-demo</module>
+        <module>pinyougou-user-interface</module>
+        <module>pinyougou-user-service</module>
+        <module>pinyougou-user-web</module>
         <!--   <module>pinyougou-content-interface</module>
    -->
     </modules>
