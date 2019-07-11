@@ -14,6 +14,9 @@
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/lee-spring-Security-demo/lee-spring-Security-demo.iml" filepath="$PROJECT_DIR$/pinyougou-prent/lee-spring-Security-demo/lee-spring-Security-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/leeConsumer/leeConsumer.iml" filepath="$PROJECT_DIR$/leeConsumer/leeConsumer.iml" />
       <module fileurl="file://$PROJECT_DIR$/leeProvider/leeProvider.iml" filepath="$PROJECT_DIR$/leeProvider/leeProvider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-interface/pinyougou-cart-interface.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-interface/pinyougou-cart-interface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-service/pinyougou-cart-service.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-service/pinyougou-cart-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-web/pinyougou-cart-web.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-web/pinyougou-cart-web.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-common/pinyougou-common.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-common/pinyougou-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-content-interface/pinyougou-content-interface.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-content-interface/pinyougou-content-interface.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-content-service/pinyougou-content-service.iml" filepath="$PROJECT_DIR$/pinyougou-prent/pinyougou-content-service/pinyougou-content-service.iml" />

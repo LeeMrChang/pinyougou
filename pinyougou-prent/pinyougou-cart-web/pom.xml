@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pinyougou-user-web</artifactId>
+    <artifactId>pinyougou-cart-web</artifactId>
     <packaging>war</packaging>
 
-    <name>pinyougou-user-web Maven Webapp</name>
+    <name>pinyougou-cart-web Maven Webapp</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
@@ -30,11 +30,10 @@
             <scope>test</scope>
         </dependency>
 
-
         <!--依赖接口-->
         <dependency>
             <groupId>com.pinyougou</groupId>
-            <artifactId>pinyougou-user-interface</artifactId>
+            <artifactId>pinyougou-cart-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -122,18 +121,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--jsr 303 ,注册新用户时的密码、手机号码、email的格式检验插件的坐标-->
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.1.0.Final</version>
-        </dependency>
-        <!-- hibernate validator-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>5.2.0.Final</version>
-        </dependency>
+
 
         <!--cas服务器的依赖-->
         <dependency>
@@ -171,18 +159,18 @@
 
     </dependencies>
 
-    <build>
-            <finalName>pinyougou-manager-web</finalName>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <configuration>
-                        <path>/</path>
-                        <port>9106</port>
-                    </configuration>
-                </plugin>
-            </plugins>
+  <build>
+          <finalName>pinyougou-manager-web</finalName>
+          <plugins>
+              <plugin>
+                  <groupId>org.apache.tomcat.maven</groupId>
+                  <artifactId>tomcat7-maven-plugin</artifactId>
+                  <configuration>
+                      <path>/</path>
+                      <port>9107</port>
+                  </configuration>
+              </plugin>
+          </plugins>
 
-        </build>
+      </build>
 </project>

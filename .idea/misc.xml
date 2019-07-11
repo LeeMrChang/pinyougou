@@ -9,6 +9,8 @@
     <file type="web" url="file://$PROJECT_DIR$/leeProvider" />
     <file type="web" url="file://$PROJECT_DIR$/leeProvider/lee-spring-security-demo" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/lee-spring-Security-demo" />
+    <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-service" />
+    <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-cart-web" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-content-service" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-manager-web" />
     <file type="web" url="file://$PROJECT_DIR$/pinyougou-prent/pinyougou-page-service" />
