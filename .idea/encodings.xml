@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" native2AsciiForPropertiesFiles="true" defaultCharsetForPropertiesFiles="UTF-8" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$/lee-cas-client-demo1" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lee-cas-client-demo2" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/lee-cas-client-demo3" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/lee-sms" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/leeConsumer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/leeProvider" charset="UTF-8" />

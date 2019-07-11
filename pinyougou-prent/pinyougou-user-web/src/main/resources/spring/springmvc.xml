@@ -52,6 +52,9 @@
     <!--延时调用-->
     <dubbo:consumer timeout="100000"></dubbo:consumer>
 
+    <!--引入安全框架的spring-security的xml文件配置-->
+    <import resource="spring-security.xml"></import>
+
 
 
 </beans>

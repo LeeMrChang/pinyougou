@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pinyougou.user.service.UserService;
 import entity.Error;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -58,7 +59,9 @@ public class UserController {
 	@RequestMapping("/add/{smsCode}")
 	public Result add(@Valid @RequestBody TbUser user, BindingResult bindingResult, @PathVariable(name = "smsCode") String smsCode){
 
-		try {
+
+
+        try {
 
             //先校验输入的格式是否正确，如果错误
             if(bindingResult.hasErrors()){

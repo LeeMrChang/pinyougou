@@ -7,7 +7,8 @@
         entity:{},  //要封装的数据
         smsCode:'',// 页面输入的验证码
         ids:[],
-        searchEntity:{}
+        searchEntity:{},
+        loginName:'',  //获取到的用户名
     },
     methods: {
 
@@ -53,12 +54,25 @@
                     }
                 }
             )
-        }
+        },
+        //获取登录名
+        getName:function () {
+            axios.get('/login/name.shtml').then(function (response) {
+
+                alert("999")
+                app.loginName=response.data;
+
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
 
     },
     //钩子函数 初始化了事件和
     created: function () {
-      
+
+        //初始化的时候就显示用户名称
+        this.getName();
 
     }
 

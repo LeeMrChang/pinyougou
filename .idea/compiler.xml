@@ -6,6 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="lee-cas-client-demo1" />
+        <module name="lee-cas-client-demo2" />
+        <module name="lee-cas-client-demo3" />
         <module name="lee-elasticsearch-demo" />
         <module name="lee-freemarker" />
         <module name="lee-pinyougou-consumer" />
@@ -39,6 +42,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="lee-cas-client-demo1" target="1.8" />
+      <module name="lee-cas-client-demo2" target="1.8" />
+      <module name="lee-cas-client-demo3" target="1.8" />
       <module name="lee-elasticsearch-demo" target="1.8" />
       <module name="lee-freemarker" target="1.8" />
       <module name="lee-pinyougou-consumer" target="1.8" />

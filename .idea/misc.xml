@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/lee-cas-client-demo1" />
+    <file type="web" url="file://$PROJECT_DIR$/lee-cas-client-demo2" />
+    <file type="web" url="file://$PROJECT_DIR$/lee-cas-client-demo3" />
     <file type="web" url="file://$PROJECT_DIR$/lee-sms" />
     <file type="web" url="file://$PROJECT_DIR$/leeConsumer" />
     <file type="web" url="file://$PROJECT_DIR$/leeProvider" />
@@ -32,6 +35,8 @@
         <option value="$PROJECT_DIR$/pinyougou-prent/pinyougou-content-interface/pom.xml" />
         <option value="$PROJECT_DIR$/pinyougou-prent/lee-pinyougou-consumer/pom.xml" />
         <option value="$PROJECT_DIR$/lee-sms/pom.xml" />
+        <option value="$PROJECT_DIR$/lee-cas-client-demo2/pom.xml" />
+        <option value="$PROJECT_DIR$/lee-cas-client-demo3/pom.xml" />
       </list>
     </option>
   </component>

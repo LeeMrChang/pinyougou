@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/lee-Sms-demo/lee-Sms-demo.iml" filepath="$PROJECT_DIR$/pinyougou-prent/lee-Sms-demo/lee-Sms-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lee-cas-client-demo1/lee-cas-client-demo1.iml" filepath="$PROJECT_DIR$/lee-cas-client-demo1/lee-cas-client-demo1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lee-cas-client-demo2/lee-cas-client-demo2.iml" filepath="$PROJECT_DIR$/lee-cas-client-demo2/lee-cas-client-demo2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lee-cas-client-demo3/lee-cas-client-demo3.iml" filepath="$PROJECT_DIR$/lee-cas-client-demo3/lee-cas-client-demo3.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/lee-elasticsearch-demo/lee-elasticsearch-demo.iml" filepath="$PROJECT_DIR$/pinyougou-prent/lee-elasticsearch-demo/lee-elasticsearch-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/lee-freemarker/lee-freemarker.iml" filepath="$PROJECT_DIR$/pinyougou-prent/lee-freemarker/lee-freemarker.iml" />
       <module fileurl="file://$PROJECT_DIR$/pinyougou-prent/lee-pinyougou-consumer/lee-pinyougou-consumer.iml" filepath="$PROJECT_DIR$/pinyougou-prent/lee-pinyougou-consumer/lee-pinyougou-consumer.iml" />

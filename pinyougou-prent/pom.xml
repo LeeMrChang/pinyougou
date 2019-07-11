@@ -39,6 +39,7 @@
         <module>pinyougou-user-interface</module>
         <module>pinyougou-user-service</module>
         <module>pinyougou-user-web</module>
+        <module>../lee-cas-client-demo1</module>
         <!--   <module>pinyougou-content-interface</module>
    -->
     </modules>
