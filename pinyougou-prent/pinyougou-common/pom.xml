@@ -93,6 +93,14 @@
             <artifactId>jedis</artifactId>
         </dependency>
 
+        <!--jsp相关,servlet层需要-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!--spring data redis-->
         <dependency>
             <groupId>org.springframework.data</groupId>

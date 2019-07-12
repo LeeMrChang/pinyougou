@@ -16,9 +16,11 @@
     <http pattern="/cart.html" security="none"></http>
 
 
-
     <!--   entry-point-ref  入口点引用 -->
     <http use-expressions="false" entry-point-ref="casProcessingFilterEntryPoint">
+        <!--在用户未登录的情况下放行可以添加到购物车的页面与请求-->
+        <!--拦截此请求后，使用·后面的access表示匿名访问  -->
+        <intercept-url pattern="/cart/*.shtml" access="IS_AUTHENTICATED_ANONYMOUSLY" ></intercept-url>
         <intercept-url pattern="/**" access="ROLE_USER"/>
         <intercept-url pattern="/favicon.ico" access="IS_AUTHENTICATED_ANONYMOUSLY"></intercept-url>
         <csrf disabled="true"/>

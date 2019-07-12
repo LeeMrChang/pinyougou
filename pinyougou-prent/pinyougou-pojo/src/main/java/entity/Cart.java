@@ -12,10 +12,13 @@ import java.util.List;
  * @TIME： 10:58
  * @Description: TODO
  */
+//就是添加商品到cookie中的商品数据列表
 public class Cart implements Serializable {
 
     private String sellerId;//商家ID
+
     private String sellerName;//商家名称
+
     private List<TbOrderItem> orderItemList;//购物车明细
 
     public String getSellerId() {
