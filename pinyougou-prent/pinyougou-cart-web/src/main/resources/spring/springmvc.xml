@@ -55,6 +55,8 @@
     <!--引入安全框架的spring-security的xml文件配置-->
     <import resource="spring-security.xml"></import>
 
-
-
+    <!--如果需要在整个系统实现跨域访问，配置以下配置-->
+  <!--  <mvc:cors>
+        <mvc:mapping path="/**" />
+    </mvc:cors>-->
 </beans>

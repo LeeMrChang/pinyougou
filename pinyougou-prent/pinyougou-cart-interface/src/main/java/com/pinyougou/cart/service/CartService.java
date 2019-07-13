@@ -21,4 +21,27 @@ public interface CartService {
      */
 
     List<Cart> addGoodsToCartList(List<Cart> cartList, Long itemId, Integer num);
+
+    /**
+     * 根据用户名从redis中取出用户添加商品到购物车列表数据
+     * @param name  用户名
+     * @return
+     */
+    List<Cart> findCartListFromRedis(String name);
+
+    /**
+     * 将用户名作为key，新的购物车列表作为value的形式将数据都添加进redis中
+     * @param name  用户名
+     * @param cartListNew  新的购物车列表
+     */
+    void saveToRedis(String name, List<Cart> cartListNew);
+
+    /**
+     *  合并cookie与redis中的购物车列表的数据
+     * @param cartList  cookie中的购物车列表数据
+     * @param cartListFromRedis  redis中的购物车列表数据
+     * @return
+     */
+    List<Cart> merge(List<Cart> cartList, List<Cart> cartListFromRedis);
+
 }

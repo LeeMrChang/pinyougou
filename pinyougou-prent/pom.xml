@@ -43,6 +43,7 @@
         <module>pinyougou-cart-interface</module>
         <module>pinyougou-cart-service</module>
         <module>pinyougou-cart-web</module>
+        <module>pinyougou-page-web</module>
         <!--   <module>pinyougou-content-interface</module>
    -->
     </modules>

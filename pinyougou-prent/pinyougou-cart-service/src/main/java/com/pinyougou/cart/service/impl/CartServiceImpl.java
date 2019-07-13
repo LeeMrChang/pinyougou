@@ -7,6 +7,7 @@ import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrderItem;
 import entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired  //注入tbItemMapper的映射对象，从数据库中获取查询数据
     private TbItemMapper tbItemMapper;
+
+    @Autowired  //注入redis模板对象
+    private RedisTemplate redisTemplate;
 
     /**
      * 向已有的购物车列表中，添加商品，返回一个新的购物车列表
@@ -84,6 +88,7 @@ public class CartServiceImpl implements CartService {
 
         } else {
             //此时是此购物车对象不为空的时候
+
             //4.判断 要添加的商 品 是否在已有的购物车中的 商家ID 存在 如果存在
             //获取已存在的商品明细列表
             List<TbOrderItem> orderItemList = cart.getOrderItemList();
@@ -120,11 +125,78 @@ public class CartServiceImpl implements CartService {
                 double number = tbOrderItemfind.getPrice().doubleValue() * tbOrderItemfind.getNum();
                 tbOrderItemfind.setTotalFee(new BigDecimal(number));
 
+                //如果商品移除为0的时候，直接删除这个商品
+                if(tbOrderItemfind.getNum() <= 0){
+                    //移除这个商品
+                    orderItemList.remove(tbOrderItemfind);
+                }
+
+                //如果当所有的商品都移除没了，购物车中商家也就没有了
+                if(orderItemList.size() <= 0){
+
+                    //移除商家
+                    cartList.remove(cart);
+                }
+
             }
         }
 
         //此时返回一个最新的购物车列表
         return cartList;
+    }
+
+    /**
+     * 根据用户名从redis中取出用户添加商品到购物车列表数据
+     *
+     * @param name 用户名
+     * @return
+     */
+    @Override
+    public List<Cart> findCartListFromRedis(String name) {
+
+        //1.注入redis模板，调用redis模板的API，根据用户名从redis中获取购物车列表
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("Redis_CartList").get(name);
+
+        //将购物车列表返回出去
+        return cartList;
+    }
+
+    /**
+     * 将用户名作为key，新的购物车列表作为value的形式将数据都添加进redis中
+     *
+     * @param name        用户名
+     * @param cartListNew 新的购物车列表
+     */
+    @Override
+    public void saveToRedis(String name, List<Cart> cartListNew) {
+
+        //将新的购物车列表添加进redis中
+        redisTemplate.boundHashOps("Redis_CartList").put(name,cartListNew);
+    }
+
+    /**
+     * 合并cookie与redis中的购物车列表的数据，全部合并到redis的购物车中
+     *
+     * @param cartList       cookie中的购物车列表数据
+     * @param cartListFromRedis redis中的购物车列表数据
+     * @return
+     */
+    @Override
+    public List<Cart> merge(List<Cart> cartList, List<Cart> cartListFromRedis) {
+
+        //遍历cookie中的购物车列表数据
+        for (Cart cart : cartList) {
+            //获取购物车的明细列表
+            List<TbOrderItem> orderItemList = cart.getOrderItemList();
+            //再遍历明细列表
+            for (TbOrderItem orderItem : orderItemList) {
+                //orderItem就是要添加的商品对象
+                cartListFromRedis = addGoodsToCartList(cartListFromRedis, orderItem.getItemId(), orderItem.getNum());
+            }
+        }
+
+        //最后返回一个合并好的新的购物车数据列表存进redis中
+        return cartListFromRedis;
     }
 
     /**
