@@ -5,6 +5,7 @@ var app = new Vue({
     data:{
         pages:15,
         pageNo:1,
+        //表示购物车列表的变量
         cartList:[],  // 定义的从后台获取到的购物车列表的数据的变量
         entity:{},
         totalMoney:0,  //设置变量，总小计的金额
@@ -12,13 +13,18 @@ var app = new Vue({
         ids:[],
         searchEntity:[],
         username:'',
-        addressList:[]    //定义一个变量，用户的地址集合
+        addressList:[],    //定义一个变量，用户的地址集合
+        address:{},    //定义一个变量
+        //这里需要给paymentType定义一个默认值。如果不给默认值，页面不会渲染
+        order:{/*paymentType:'1'*/},     //定义订单对象，用于绑定页面上所有需要提交的数据
     },
     //3.放置方法的地方
     methods:{
 
         //此函数表示页面加载时，从后台根据用户从cookie或者redis中获取到购物车列表的数据，然后将值赋予给购物车列表的变量
         findCartList: function () {
+
+            alert("送货清单")
             //变量初始化都是0
             this.totalMoney = 0;
             this.totalNum = 0;
@@ -93,8 +99,63 @@ var app = new Vue({
 
             axios.get('/address/findAddressListByUserId.shtml').then(
                 function (response) {
-                        alert("888")
+
                     app.addressList = response.data;
+
+                    //遍历地址列表 找出是否是默认地址值，如果是，默认勾选
+                    for (var i = 0; i <app.addressList.length ; i++) {
+
+                        //判断如果是默认地址值
+                        if(app.addressList[i].isDefault=='1'){
+                            app.address = app.addressList[i];
+                            break;
+                        }
+                    }
+
+                }
+            )
+        },
+        //定义一个函数，传入一个参数， 当点击这个变量的时候，影响这个变量
+        selectAddress:function (address) {
+            this.address = address;
+
+        },
+        //再定义一个函数，当点击的时候传入地址参数与之对比，判断匹不匹配，如果匹配，则默认勾选
+        isSelectedAddress:function (address) {
+
+            //判断
+            if(this.address==address){
+                return true;  //勾选
+            }
+            return false;
+        },
+
+        //定义一个绑定支付类型的并传入返回类型的函数，用于指定订单的支付方式
+        selectType:function (type) {
+
+            //使用页面渲染的方式
+            this.$set(this.order,'paymentType',type)
+
+            //指定支付类型
+            //this.order.paymentType = type;
+        },
+
+        //购物车添加订单的函数方法
+        submitOrder:function () {
+            //设置值
+            this.$set(this.order,'receiverAreaName',this.address.address);
+            this.$set(this.order,'receiverMobile',this.address.mobile);
+            this.$set(this.order,'receiver',this.address.contact);
+            axios.post('/order/add.shtml',this.order).then(
+                function (responde) {
+                    //判断提交是否成功
+                    if(responde.data.success){
+                        //跳转到支付页面
+                        alert("跳转到支付页面")
+                    }else {
+                        alert("提交失败！！")
+                    }
+
                 }
             )
         }
@@ -105,11 +166,12 @@ var app = new Vue({
     created:function () {
 
         //页面加载时调用
-        //this.findCartList();
+        this.findCartList();
+
+        if(window.location.href.indexOf("getOrderInfo.html")!=-1)
+        this.findAddressList();
 
         this.getName();
-
-        this.findAddressList();
     }
 
 

@@ -121,8 +121,10 @@ public class CartServiceImpl implements CartService {
 
                 //4.2 判断 要添加的商品 是否在 商家下的明细列表中是否存在 如果 存在 数量相加
                 tbOrderItemfind.setNum(tbOrderItemfind.getNum() + num); //让原来的商品明细与将要添加的商品相加就好
+
                 //数量改变，小计也跟着变化,也就是更新小计
                 double number = tbOrderItemfind.getPrice().doubleValue() * tbOrderItemfind.getNum();
+
                 tbOrderItemfind.setTotalFee(new BigDecimal(number));
 
                 //如果商品移除为0的时候，直接删除这个商品
@@ -155,7 +157,8 @@ public class CartServiceImpl implements CartService {
     public List<Cart> findCartListFromRedis(String name) {
 
         //1.注入redis模板，调用redis模板的API，根据用户名从redis中获取购物车列表
-        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("Redis_CartList").get(name);
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("" +
+                "").get(name);
 
         //将购物车列表返回出去
         return cartList;
@@ -191,7 +194,8 @@ public class CartServiceImpl implements CartService {
             //再遍历明细列表
             for (TbOrderItem orderItem : orderItemList) {
                 //orderItem就是要添加的商品对象
-                cartListFromRedis = addGoodsToCartList(cartListFromRedis, orderItem.getItemId(), orderItem.getNum());
+                cartListFromRedis = addGoodsToCartList(cartListFromRedis,
+                        orderItem.getItemId(), orderItem.getNum());
             }
         }
 
