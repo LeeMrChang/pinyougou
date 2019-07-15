@@ -157,8 +157,7 @@ public class CartServiceImpl implements CartService {
     public List<Cart> findCartListFromRedis(String name) {
 
         //1.注入redis模板，调用redis模板的API，根据用户名从redis中获取购物车列表
-        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("" +
-                "").get(name);
+        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("Redis_CartList").get(name);
 
         //将购物车列表返回出去
         return cartList;

@@ -192,6 +192,7 @@ var app = new Vue({
 
         //1.获取url中的参数列表值
         var urlParam = this.getUrlParam();
+
         if(urlParam!=undefined&&(urlParam.keywords!=undefined || urlParam.keywords!=null)){
             //2.将参数的值赋值给变量keywords
             //这边需要将传递过来的中文参数进行解码decodeURIComponent

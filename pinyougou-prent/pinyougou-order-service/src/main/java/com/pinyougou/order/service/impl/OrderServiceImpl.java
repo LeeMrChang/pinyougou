@@ -5,15 +5,18 @@ import com.pinyougou.common.utils.IdWorker;
 import com.pinyougou.mapper.TbItemMapper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
 import com.pinyougou.pojo.TbItem;
 import com.pinyougou.pojo.TbOrder;
 import com.pinyougou.pojo.TbOrderItem;
+import com.pinyougou.pojo.TbPayLog;
 import entity.Cart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +43,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private TbOrderMapper orderMapper;
 
+    @Autowired  //注入雪花算法的对象
+    private IdWorker idWorker;
 
+    @Autowired
+    private TbPayLogMapper payLogMapper;
 
     /**
      * 提交订单的方法
@@ -55,12 +62,15 @@ public class OrderServiceImpl implements OrderService {
         List<Cart> cartList = (List<Cart>)
                 redisTemplate.boundHashOps("Redis_CartList").get(tbOrder.getUserId());
 
+        double total_fee = 0;  //创建总金额
+        List<String> orderList =  new ArrayList<>();  //创建订单列表，获取订单号
         //遍历购物车列表先，这里就是拆单，每一个cart（购物车对象）就是一个订单
         for (Cart cart : cartList) {
             //1.获取订单的数据  插入到订单列表中
             //1.1使用雪花算法生成订单Id
-            long orderId = new IdWorker(0, 1).nextId();
-            System.out.println("");
+            long orderId = idWorker.nextId();
+
+            orderList.add(orderId+"");
 
             //新创建一个订单对象，拆单，拆单支付
             TbOrder order = new TbOrder();
@@ -88,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
             double money=0;
             for (TbOrderItem orderItem : orderItemList) {
                 //2.获取订单选项的数据  订单选项表
-                long orderItemId = new IdWorker(0, 1).nextId();
+                long orderItemId = idWorker.nextId();
                 orderItem.setId(orderItemId);
                 //订单ID
                 orderItem.setOrderId(orderId);
@@ -103,15 +113,108 @@ public class OrderServiceImpl implements OrderService {
                 orderItemMapper.insert(orderItem);
             }
 
+
+            //计算总金额 ，日志要记录的总金额 等于 之前算好的某个订单要支付的小计总金额
+            total_fee+=money;//此时是一个元的单位
+
             //最后设置支付金额
             order.setPayment(new BigDecimal(money));
+
             ////提交订单
             orderMapper.insert(order);
         }
 
-            //这时，如果订单提交了，就需要把redis中的某一个用户的购物车订单清空
+        //在用户添加订单的时候为这个交易创建支付日志记录,创建记录支付日志对象
+        TbPayLog payLog = new TbPayLog();
+
+        //补全属性
+        String outTradeNo=  idWorker.nextId()+"";//支付订单号
+        payLog.setOutTradeNo(outTradeNo);//支付订单号
+        payLog.setCreateTime(new Date());//创建时间
+        double v = total_fee * 100;  //元的单位转分的单位
+        payLog.setTotalFee((long)v);   //记录总金额
+        payLog.setTradeState("0");  //未支付状态
+        payLog.setPayType("1");   //支付的方式 0 支付宝，1 微信支付 2 银行
+        payLog.setOrderList(orderList.toString().replace(
+                "[","")
+                .replace("]",
+                        ""));   //设置关联的订单号
+
+        payLog.setUserId(tbOrder.getUserId());//用户ID
+
+        //再存到redis中，可以不用  大key是payLog记录日志的表名
+        redisTemplate.boundHashOps(TbPayLog.class.getSimpleName()).put(tbOrder.getUserId(),payLog);
+
+
+        //在用户创建订单的时候开始添加创建记录支付日志的信息
+        payLogMapper.insert(payLog);
+
+
+        //这时，如果订单提交了，就需要把redis中的某一个用户的购物车订单清空
         redisTemplate.boundHashOps("Redis_CartList").delete(tbOrder.getUserId());
 
+
+    }
+
+    /**
+     * 根据用户名从订单层获取存入redis中的记录支付日志对象
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public TbPayLog getPayLogFromRedis(String userId) {
+
+        //根据key获取value
+        TbPayLog payLog = (TbPayLog) redisTemplate.boundHashOps(TbPayLog.class.getSimpleName()).get(userId);
+
+        return  payLog;
+    }
+
+    /**
+     * //1.更新支付日志的记录（交易的流水、交易的状态、交易的时间）
+     * //2.更新日志支付的记录  关联订单的支付状态和支付时间
+     * //3.删除该用户redis中的支付日志
+     *
+     * @param transaction_id 微信支付订单号
+     * @param out_trade_no   商户订单号
+     */
+    @Override
+    public void updateOrderStatus(String transaction_id, String out_trade_no) {
+
+        //1.根据微信订单号，主键查询，查询到日志记录，修改日志状态
+        TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+
+
+        payLog.setPayTime(new Date());  //设置新的交易时间
+        payLog.setTradeState("1");    //设置新的交易状态
+        payLog.setOutTradeNo(out_trade_no);  //设置新的交易号
+
+        //修改更新日志
+        payLogMapper.updateByPrimaryKey(payLog);
+
+        //2.更新 支付的日志记录 关联到的 订单的 状态 和支付时间  修改更新订单的
+        String orderList = payLog.getOrderList();  //获取到订单列表
+
+        //再切割出 订单号
+        String[] split = orderList.split(",");
+
+        //获取订单号对应的对象
+        for (String orderId : split) {
+            //获取到的订单对象  需要long类型
+            TbOrder tbOrder = orderMapper.selectByPrimaryKey(Long.valueOf(orderId));
+
+            //更新订单对象的支付状态
+            tbOrder.setStatus("2");//已付款的状态是2
+
+            tbOrder.setUpdateTime(new Date());
+            tbOrder.setPaymentTime(new Date());
+
+            orderMapper.updateByPrimaryKey(tbOrder);
+        }
+
+        //3.删除该用户redis中的支付日志
+        redisTemplate.boundHashOps(TbPayLog.class.getSimpleName()).delete(payLog.getUserId());
 
     }
 }

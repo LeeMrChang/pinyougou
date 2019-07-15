@@ -33,6 +33,8 @@
         <module name="pinyougou-page-interface" />
         <module name="pinyougou-page-service" />
         <module name="pinyougou-page-web" />
+        <module name="pinyougou-pay-interface" />
+        <module name="pinyougou-pay-service" />
         <module name="pinyougou-pojo" />
         <module name="pinyougou-portal-web" />
         <module name="pinyougou-search-interface" />
@@ -77,6 +79,8 @@
       <module name="pinyougou-page-interface" target="1.8" />
       <module name="pinyougou-page-service" target="1.8" />
       <module name="pinyougou-page-web" target="1.8" />
+      <module name="pinyougou-pay-interface" target="1.8" />
+      <module name="pinyougou-pay-service" target="1.8" />
       <module name="pinyougou-pojo" target="1.8" />
       <module name="pinyougou-portal-web" target="1.8" />
       <module name="pinyougou-prent" target="1.8" />

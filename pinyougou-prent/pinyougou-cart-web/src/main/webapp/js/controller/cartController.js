@@ -33,8 +33,11 @@ var app = new Vue({
 
                 //获取购物车列表数据
                 app.cartList = response.data;
+
                 //获取到购车列表的数据
                 var obj = app.cartList;
+
+                console.log(obj)
 
                 //遍历购物车的明细列表
                 for (var i = 0; i <obj.length; i++) {
@@ -151,7 +154,7 @@ var app = new Vue({
                     //判断提交是否成功
                     if(responde.data.success){
                         //跳转到支付页面
-                        alert("跳转到支付页面")
+                        window.location.href="pay.html";
                     }else {
                         alert("提交失败！！")
                     }
@@ -168,7 +171,9 @@ var app = new Vue({
         //页面加载时调用
         this.findCartList();
 
+        //判断调用哪一个页面时加载
         if(window.location.href.indexOf("getOrderInfo.html")!=-1)
+
         this.findAddressList();
 
         this.getName();
