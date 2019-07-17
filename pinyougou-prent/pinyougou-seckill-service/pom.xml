@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>pinyougou-manager-web</artifactId>
+    <artifactId>pinyougou-seckill-service</artifactId>
     <packaging>war</packaging>
 
-    <name>pinyougou-manager-web Maven Webapp</name>
+    <name>pinyougou-seckill-service Maven Webapp</name>
     <!-- FIXME change it to the project's website -->
     <url>http://www.example.com</url>
 
@@ -26,42 +26,28 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
 
-        <!--依赖接口 sellergoods商品的接口依赖-->
-        <dependency>
-            <groupId>com.pinyougou</groupId>
-            <artifactId>pinyougou-sellergoods-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!--依赖page静态生成页面的接口依赖  ，因为引进了rocketmq，所以对这些接口的依赖进行移除-->
-        <!--<dependency>
-            <groupId>com.pinyougou</groupId>
-            <artifactId>pinyougou-page-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>-->
-
-        <!--需要依赖search的接口来进行ES数据的同步更新，搜索服务的接口-->
-       <!-- <dependency>
-            <groupId>com.pinyougou</groupId>
-            <artifactId>pinyougou-search-interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>-->
-
-            <!--秒杀服务-->
+        <!--引入interface,interface中引入了pojo,形成了依赖，所以不用引入pojo层依赖-->
         <dependency>
             <groupId>com.pinyougou</groupId>
             <artifactId>pinyougou-seckill-interface</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!--因为也算属于一种消费者形式，有dubbo,也有spring,需要依赖common-->
+        <!--引入common管理类-->
         <dependency>
             <groupId>com.pinyougou</groupId>
             <artifactId>pinyougou-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--引入dao-->
+        <dependency>
+            <groupId>com.pinyougou</groupId>
+            <artifactId>pinyougou-dao</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
@@ -71,7 +57,6 @@
             <artifactId>spring-context</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--springmvc-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -102,7 +87,7 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!--dubbo-->
+        <!--web-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
@@ -128,55 +113,37 @@
                     <artifactId>log4j</artifactId>
                     <groupId>log4j</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
-        <!--jsp相关,servlet层需要-->
+        <!--freemarker的依赖-->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet-api.version}</version>
-            <scope>provided</scope>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
 
-        <!--spring-security安全配置的依赖-->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
 
-        <!--jsp相关-->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!--加入redis、spring data 的依赖-->
 
     </dependencies>
 
-    <!--插件的端口号要特别注意-->
-    <build>
-        <finalName>pinyougou-manager-web</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <configuration>
-                    <path>/</path>
-                    <port>9101</port>
-                </configuration>
-            </plugin>
-        </plugins>
+      <build>
+              <finalName>pinyougou-manager-web</finalName>
+              <plugins>
+                  <plugin>
+                      <groupId>org.apache.tomcat.maven</groupId>
+                      <artifactId>tomcat7-maven-plugin</artifactId>
+                      <configuration>
+                          <path>/</path>
+                          <port>9010</port>
+                      </configuration>
+                  </plugin>
+              </plugins>
 
-    </build>
-
-
+          </build>
 
 </project>
