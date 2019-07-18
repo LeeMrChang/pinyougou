@@ -8,7 +8,9 @@ import com.pinyougou.common.utils.IdWorker;
 import com.pinyougou.common.utils.SysConstants;
 import com.pinyougou.mapper.TbSeckillGoodsMapper;
 import com.pinyougou.pojo.TbSeckillGoods;
+import com.pinyougou.seckill.pojo.SeckillStatus;
 import com.pinyougou.seckill.service.SeckillOrderService;
+import com.pinyougou.seckill.thread.CreateOrderThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
@@ -117,6 +119,9 @@ public class SeckillOrderServiceImpl extends CoreServiceImpl<TbSeckillOrder>  im
 	    @Autowired  //输入秒杀商品对象
         private TbSeckillGoodsMapper seckillGoodsMapper;
 
+	    @Autowired  //注入多线程订单处理类
+        private CreateOrderThread createOrderThread;
+
 
     /**
      * 此方法用于创建用户抢到秒杀订单且将订单存进redis中的（预订单）
@@ -127,7 +132,7 @@ public class SeckillOrderServiceImpl extends CoreServiceImpl<TbSeckillOrder>  im
     @Override
     public void submitOrder(Long id, String userId) {
 
-        //1.先从redis中根据秒杀商品的id获取秒杀商品的数据
+       /* //1.先从redis中根据秒杀商品的id获取秒杀商品的数据
         TbSeckillGoods seckillGoods = (TbSeckillGoods)
                 redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).get(id);
 
@@ -135,38 +140,133 @@ public class SeckillOrderServiceImpl extends CoreServiceImpl<TbSeckillOrder>  im
         if (seckillGoods == null || seckillGoods.getStockCount() <= 0) {
             //说明商品不存在了,或者已经没有库存了
             throw new RuntimeException("商品已经被抢光了");
+        }*/
+
+        //判断 用户是否存在为支付的订单 如果有   先判断是否有未支付的订单
+        if(redisTemplate.boundHashOps(SysConstants.SEC_KILL_ORDER).get(userId)!=null){
+            throw new RuntimeException("有未支付的订单！");
         }
 
-        //3.减库存,抢到，就减一个库存
-        seckillGoods.setStockCount(seckillGoods.getStockCount()-1);
-        //库存减少之后重新设置进redis中
-        redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).put(id,seckillGoods);
 
-        //4.判断 如果库存为0 更新到数据库中 删除redis中的商品
-        if(seckillGoods.getStockCount() <= 0){ //如果被抢光
-            //如果库存为0
-            seckillGoodsMapper.updateByPrimaryKeySelective(seckillGoods);
-            //删除redis中的商品
-            redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).delete(id);
+        //判断如果用户已经在排队中（订单正在创建）
+        if(redisTemplate.boundHashOps(SysConstants.SEC_USER_QUEUE_FLAG_KEY).get(userId)!=null){
+            //如果此用户正在队列中
+            throw new RuntimeException("正在排队，请稍等...");
         }
 
-        //5.创建 秒杀的预订单到redis中
-        TbSeckillOrder seckillOrder = new TbSeckillOrder();
+
+       //如果没有为支付的订单再弹出一个库存
+       //现在商品被压成队列，从redis中弹出队列元素（也就是商品）如果元素为null 说明已经卖完了
+        //之前商品从左边推送存，现在从右边取出元素
+        Object seckillGoodsId = redisTemplate.boundListOps(SysConstants.SEC_KILL_GOODS_PREFIX+id).rightPop();
+        //如果此元素为null  ,这里就是判断秒杀商品还有没有库存
+        if (seckillGoodsId == null) {
+            throw new RuntimeException("商品已经被抢光了");
+        }
 
 
 
-        seckillOrder.setId( new IdWorker(0,2).nextId());//设置订单的ID 这个就是out_trade_no
-        seckillOrder.setCreateTime(new Date());//创建时间
-        seckillOrder.setMoney(seckillGoods.getCostPrice());//秒杀价格  价格
-        seckillOrder.setSeckillId(id);//秒杀商品的ID
-        seckillOrder.setSellerId(seckillGoods.getSellerId());  //商家id
-        seckillOrder.setUserId(userId);//设置用户ID
-        seckillOrder.setStatus("0");//状态 未支付
+        //将在排队抢购秒杀商品的用户压入redis队列中
+        redisTemplate.boundListOps(SysConstants.SEC_KILL_USER_ORDER_LIST) //表示排队用户的在redis中的大key
+                .leftPush(new SeckillStatus(
+                        userId,        //传入用户id
+                        id,            //商品id
+                        SeckillStatus.SECKILL_queuing     //用户的抢购状态，正在排队
+                        ));
 
-        //将构建的订单保存到redis中  在秒杀订单中，userId就是唯一的标识
-        redisTemplate.boundHashOps(SysConstants.SEC_KILL_ORDER).put(userId, seckillOrder);
+        //将用户储存在一个正在排队的标识
+        redisTemplate.boundHashOps(SysConstants.SEC_USER_QUEUE_FLAG_KEY).put(userId,id);
+
+
+        //执行创建（多线程）订单的方法
+        createOrderThread.handleCreateOrder();
 
     }
 
+    /**
+     * 查询订单状态，是否支付
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public TbSeckillOrder getUserOrderStatus(String userId) {
+        //返回订单对象
+        return (TbSeckillOrder) redisTemplate.boundHashOps(SysConstants.SEC_KILL_ORDER)
+                .get(userId);
+    }
 
+    @Autowired
+    private TbSeckillOrderMapper tbSeckillOrderMapper;
+
+    /**
+     * 如果此用户的抢购秒杀订单已支付
+     * 1.从redis中获取秒杀订单
+     * 2.修改此订单的支付状态为已支付
+     * 3.将此订单从redis中储存到mysql中
+     * 4.redis中删除此订单
+     *
+     * @param transaction_id 交易流水号
+     * @param userId         用户id
+     */
+    @Override
+    public void updateOrderStatus(String transaction_id, String userId) {
+
+        //1.从redis中获取秒杀订单
+        TbSeckillOrder seckillOrder = getUserOrderStatus(userId);
+
+        //2.修改此订单的支付状态为已支付
+        seckillOrder.setStatus("1");
+        seckillOrder.setPayTime(new Date());  //订单支付完成时间
+        seckillOrder.setTransactionId(transaction_id);   //订单交易完成产生的流水号
+
+        //3.将此订单从redis中储存到mysql中
+        tbSeckillOrderMapper.insert(seckillOrder);
+
+        //4.redis中删除此订单
+        redisTemplate.boundHashOps(SysConstants.SEC_KILL_ORDER).delete(userId);
+    }
+
+    @Autowired
+    private TbSeckillGoodsMapper tbSeckillGoodsMapper;
+
+    /**
+     * //2.删除redis中的该用户对应对应的为支付的订单
+     * //3.恢复库存
+     * //4.恢复队列的元素
+     *
+     * @param userId  用户id
+     */
+    @Override
+    public void deleteOrder(String userId) {
+
+        //2.删除redis中的该用户对应对应的为支付的订单
+        TbSeckillOrder seckillOrder = getUserOrderStatus(userId);
+
+        //3.恢复库存
+        Long seckillId = seckillOrder.getSeckillId(); //订单对应的秒杀商品的id
+
+        //从根据秒杀商品的id从redis中获取到该秒杀商品
+        TbSeckillGoods tbSeckillGoods = (TbSeckillGoods) redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).get(seckillId);
+
+        //如果该商品不为空
+        if(tbSeckillGoods!=null){
+            //从数据库中获取商品的数据
+            TbSeckillGoods seckillGoods = tbSeckillGoodsMapper.selectByPrimaryKey(seckillId);
+            //恢复库存
+            seckillGoods.setStockCount(tbSeckillGoods.getStockCount()+1);
+            //存储到redis中
+            redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).put(seckillId,seckillGoods);
+        }else {
+            //如果不为空,库存加1
+            tbSeckillGoods.setStockCount(tbSeckillGoods.getStockCount()+1);
+            //存储到redis中
+            redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).put(seckillId,tbSeckillGoods);
+        }
+
+        //4.恢复队列的元素
+        redisTemplate.boundListOps(SysConstants.SEC_KILL_GOODS_PREFIX+seckillId).leftPush(seckillId);
+
+
+    }
 }

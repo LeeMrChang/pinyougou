@@ -44,5 +44,7 @@
     <import resource="classpath:spring/applicationContext-dao.xml"></import>
     <import resource="classpath:spring/applicationContext-redis.xml"></import>
     <import resource="classpath:spring/applicationContext-consumer.xml"></import>
+    <import resource="classpath:spring/applicationContext-producer.xml"></import>
+
 
 </beans>

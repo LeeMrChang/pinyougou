@@ -36,4 +36,29 @@ public interface SeckillOrderService extends CoreService<TbSeckillOrder> {
      */
     void submitOrder(Long id, String userId);
 
+    /**
+     * 查询订单状态，是否支付
+     * @param userId
+     * @return
+     */
+    TbSeckillOrder getUserOrderStatus(String userId);
+
+    /**如果此用户的抢购秒杀订单已支付
+     * 1.从redis中获取秒杀订单
+     * 2.修改此订单的支付状态为已支付
+     * 3.将此订单从redis中储存到mysql中
+     * 4.redis中删除此订单
+     *
+     * @param transaction_id   交易流水号
+     * @param userId          用户id
+     */
+    void updateOrderStatus(String transaction_id, String userId);
+
+    /**
+     *  //2.删除redis中的该用户对应对应的为支付的订单
+     *  //3.恢复库存
+     *  //4.恢复队列的元素
+     * @param userId
+     */
+    void deleteOrder(String userId);
 }

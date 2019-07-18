@@ -132,4 +132,48 @@ public class PayServiceImpl implements PayService {
         }
 
     }
+
+    /**
+     * 关闭微信订单（交易流水号）的方法
+     *
+     * @param out_trade_no
+     * @return
+     */
+    @Override
+    public Map<String, String> closePay(String out_trade_no) {
+
+        try {
+            //1.组合参数 到map中
+            Map<String, String> param = new HashMap();//创建参数
+            param.put("appid", appid);//公众号
+            param.put("mch_id", partner);//商户号
+            param.put("out_trade_no", out_trade_no);//商户订单号
+            param.put("nonce_str", WXPayUtil.generateNonceStr());//随机字符串
+            //map装换为xml时会自动添加一个签名
+
+            //将map转换为xml
+            String signedXml = WXPayUtil.generateSignedXml(param, partnerkey);
+
+            //2.调用httpClient 模拟浏览器发送请求  创建连接关闭微信支付订单的接口连接
+            HttpClient httpClient = new HttpClient("https://api.mch.weixin.qq.com/pay/closeorder");
+            httpClient.setHttps(true); //设置它为一个https的请求
+            httpClient.setXmlParam(signedXml);  //设置body 请求体
+            httpClient.post();   //发送请求
+
+            //3.调用httpClient获取响应内容，解析出里面的支付状态trade_state
+            String content = httpClient.getContent();  //此时获取到的是一个xml
+            System.out.println("guan bi result :" + content);
+
+            //4.最后返回map，需要将xml再转回map
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(content);
+
+            //没有异常，正常返回
+            return resultMap;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //如果出现异常 ,就是查询不到支付状态
+            return null;
+        }
+    }
 }

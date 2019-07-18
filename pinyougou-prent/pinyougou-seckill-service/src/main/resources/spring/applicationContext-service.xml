@@ -2,10 +2,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://code.alibabatech.com/schema/dubbo
-       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <!--组件扫描-->
     <!--dubbo的配置项，提供者，pinyougou-sellergoods提供者的唯一标识名-->
@@ -31,5 +32,30 @@
         <property name="templateLoaderPath" value="/WEB-INF/ftl"></property>
     </bean>
 
+
+    <!--任务驱动 使用任务执行管理器、注解驱动-->
+    <task:annotation-driven executor="taskExecutor"></task:annotation-driven>
+
+    <!--线程池-->
+    <bean class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"
+          id="taskExecutor">
+        <!--初始线程数量-->
+        <property name="corePoolSize" value="10"></property>
+        <!--最大线程数量-->
+        <property name="maxPoolSize" value="100"></property>
+        <!--队列的最大容量-->
+        <property name="queueCapacity" value="200"></property>
+        <!--线程的最大空闲时间 秒-->
+        <property name="keepAliveSeconds" value="300"></property>
+
+        <!--设置拒绝策略-->
+        <property name="rejectedExecutionHandler">
+            <!--该策略指定如果线程不足，由创建线程池的系统来进行处理-->
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"></bean>
+        </property>
+    </bean>
+
+    <!--配置多线程处理类，将多线程处理类交给spring容器管理-->
+    <bean class="com.pinyougou.seckill.thread.CreateOrderThread" id="createOrderThread"></bean>
 
 </beans>

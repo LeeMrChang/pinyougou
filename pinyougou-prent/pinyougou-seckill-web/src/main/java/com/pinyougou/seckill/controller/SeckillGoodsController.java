@@ -1,7 +1,9 @@
 package com.pinyougou.seckill.controller;
 import java.util.List;
+import java.util.Map;
 
 import com.pinyougou.seckill.service.SeckillGoodsService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pinyougou.pojo.TbSeckillGoods;
@@ -104,5 +106,15 @@ public class SeckillGoodsController {
                                       @RequestBody TbSeckillGoods seckillGoods) {
         return seckillGoodsService.findPage(pageNo, pageSize, seckillGoods);
     }
-	
+
+    /**
+     * 根据秒杀商品id 获取秒杀结束时间以及商品库存
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getGoodsById")
+    public Map getGoodsById(Long id){
+        return seckillGoodsService.getGoodsById(id);
+    }
+
 }

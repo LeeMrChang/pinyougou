@@ -11,6 +11,9 @@ var app = new Vue({
         ids:[],
         searchEntity:[],
         seckillId:0,   //秒杀商品的id
+        goodsInfo:{count:''} ,  //设置秒杀商品的存库
+
+        messageInfo:'',  //接收后台响应的抢购成功或者失败的消息
     },
     //3.放置方法的地方
     methods:{
@@ -68,14 +71,78 @@ var app = new Vue({
 
         //秒杀商品提交下单的函数
         submitOrder:function () {
-            alert(66666666666)
+            //alert(66666666666)
 
             axios.get('/seckillOrder/submitOrder/'+this.seckillId+'.shtml').then(
                 function (response) {
-                    alert(response.data.message)
+
+                    if(response.data.success){
+                        //如果在登录的情况下，则订单抢购成功
+                       //alert(response.data.message)
+                        app.messageInfo=response.data.message
+
+                    }else {
+
+                        if (response.data.message == '403') {
+                            //否则报403需要登录再抢购 从秒杀抢购页面跳转到cas登录页面，
+                            // 登录过后又重定向跳回秒杀抢购页面
+                            var url = window.location.href;
+                            //跳转到一个在未登录的情况下会被拦截的页面下
+                            window.location.href = "http://localhost:9111/page/login.shtml?url="+url;
+
+                        }else {
+                            //或者报错。抢购失败
+                          app.messageInfo = response.data.message;
+                        }
+                    }
                 }
             )
-        }
+        },
+
+        //定义一个从后台获取秒杀结束时间与秒杀商品库存符的函数 ,根据商品id
+        getGoodsById:function (id) {
+
+
+            axios.get('/seckillGoods/getGoodsById.shtml?id='+id).then(
+                function (response) { //map
+
+                    //获取到秒杀结束时间
+                    app.caculate(response.data.time);
+                    //获取到秒杀商品存库
+                    app.goodsInfo.count = response.data.count;
+                }
+            )
+        },
+
+        //查询订单的状态 当点击立即抢购之后执行。
+        queryStatus:function () {
+
+            var count =0;
+            //三秒钟执行一次发送请求
+            var queryorder = window.setInterval(function () {
+                count+=3;
+                axios.get('/seckillOrder/queryOrderStatus.shtml').then(
+                    function (response) {
+                        if(response.data.success){
+                            //跳转到支付页面,此时订单创建成功，就停止循环发送请求
+                            window.clearInterval(queryorder);
+
+                            alert("订单创建成功");
+                            window.location.href="pay/pay.html";
+
+                        }else{
+                            if(response.data.message=='403'){
+                                //要登录
+                            }else{
+                                //不需要登录需要提示
+                                app.messageInfo=response.data.message+"....."+count;
+                            }
+                        }
+                    }
+                )
+            },3000)//表示3秒
+
+        },
 
 
     },
@@ -83,13 +150,16 @@ var app = new Vue({
     //4.钩子函数，一些显示数据可初始化的地方
     created:function () {
 
-        var obj = this.getUrlParam("id");
+        var obj = this.getUrlParam();
 
+        //获取秒杀商品的距离结束时间  ,传入秒杀商品id
+        this.getGoodsById(obj.id)
+
+        //获取秒杀商品的id
         this.seckillId = obj.id;
 
-        alert(obj.id);
+        //alert(obj.id);
 
-        this.caculate(100000000)
     }
 
 

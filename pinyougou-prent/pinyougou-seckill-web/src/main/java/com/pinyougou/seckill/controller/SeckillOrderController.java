@@ -57,7 +57,8 @@ public class SeckillOrderController {
 
             seckillOrderService.submitOrder(id,userId);
 
-			return new Result(true, "订单创建成功");
+			return new Result(true, "正在排队中，请稍等...");
+
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			return new Result(false, e.getMessage());
@@ -116,6 +117,36 @@ public class SeckillOrderController {
                                       @RequestParam(value = "pageSize", defaultValue = "10", required = true) Integer pageSize,
                                       @RequestBody TbSeckillOrder seckillOrder) {
         return seckillOrderService.findPage(pageNo, pageSize, seckillOrder);
+    }
+
+    /**
+     *  查询订单状态，判断订单是否为null
+     *  如果为null,则订单创建成功，待支付
+     *  不为null，则正在排队创建订单中
+     * @return
+     */
+    @RequestMapping("/queryOrderStatus")
+    public Result queryOrderStatus(){
+        try {
+            String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+            if ("anonymousUser".equals(userId)) {
+                //表示没有登录
+                return new Result(false, "403");
+            }
+            //判断查询订单状态
+            TbSeckillOrder order = seckillOrderService.getUserOrderStatus(userId);
+            //说明订单生成成功
+            if(order !=null){
+                return new Result(true, "订单创建成功，待支付");
+            }else{
+                return new Result(false, "正在排队中,请稍等...");
+            }
+        } catch (RuntimeException e) {
+            return new Result(false, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "抢单失败");
+        }
     }
 	
 }

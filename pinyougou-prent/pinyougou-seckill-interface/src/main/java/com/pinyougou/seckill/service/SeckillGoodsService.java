@@ -1,5 +1,7 @@
 package com.pinyougou.seckill.service;
 import java.util.List;
+import java.util.Map;
+
 import com.pinyougou.pojo.TbSeckillGoods;
 
 import com.github.pagehelper.PageInfo;
@@ -28,5 +30,11 @@ public interface SeckillGoodsService extends CoreService<TbSeckillGoods> {
 	 * @return
 	 */
 	PageInfo<TbSeckillGoods> findPage(Integer pageNo, Integer pageSize, TbSeckillGoods SeckillGoods);
-	
+
+    /**
+     * 根据id获取到秒杀商品，设置秒杀商品的开始抢购与秒杀结束时间
+     * @param id  秒杀商品id
+     * @return
+     */
+    Map getGoodsById(Long id);
 }

@@ -25,4 +25,11 @@ public interface PayService {
      */
     Map<String, String> queryStatus(String out_trade_no);
 
+    /**
+     * 关闭微信订单（交易流水号）的方法
+     * @param out_trade_no
+     * @return
+     */
+    Map<String, String> closePay(String out_trade_no);
+
 }

@@ -71,11 +71,28 @@ public class Task {
 
 
         for (TbSeckillGoods good : goods) {
+            //将遍历出来的每一个商品创建成一个队列
+            pushGoodsList(good);
             //2.将数据推送到redis中  SEC_KILL_GOODS作为大key 秒杀商品的id做为小key，商品作为值
             redisTemplate.boundHashOps(SysConstants.SEC_KILL_GOODS).put(good.getId(),good);
         }
 
 
         System.out.println(new Date());
+    }
+
+    /**
+     *将每一个商品创建出一个队列 队列的元素的个数 由商品的库存决定
+     * @param good   商品的id
+     */
+    private void pushGoodsList(TbSeckillGoods good){
+
+        //获取并遍历商品的库存
+        for (Integer i = 0; i < good.getStockCount(); i++) {
+            redisTemplate.boundListOps(
+                    SysConstants.SEC_KILL_GOODS_PREFIX    //代表大key的前缀标识
+                            +good.getId())                    //拼接上商品的id
+                    .leftPush(good.getId());                 //从左推送到商品
+        }
     }
 }

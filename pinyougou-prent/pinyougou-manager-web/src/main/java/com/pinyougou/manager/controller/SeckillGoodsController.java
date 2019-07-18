@@ -1,5 +1,6 @@
 package com.pinyougou.manager.controller;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.pinyougou.common.rocketmq.MessageInfo;
@@ -165,5 +166,16 @@ public class SeckillGoodsController {
             return new Result(false,"审核失败");
         }
 
+    }
+
+    /**
+     * 根据商品id获取到秒杀商品，设置好秒杀商品的开始时间，与秒杀结束时间
+     * @param id  商品id
+     * @return
+     */
+    @RequestMapping("/getGoodsById")
+    public Map getGoodsById(Long id){
+
+        return seckillGoodsService.getGoodsById(id);
     }
 }
