@@ -25,7 +25,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <!--添加dao层的依赖,dao层既有pojo的依赖，也有通用Mapper,还有通用工具的依赖-->
