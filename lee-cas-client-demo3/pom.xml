@@ -18,7 +18,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
       <!--安全框架的版本锁定-->
-      <spring.security.version>5.0.0.RELEASE</spring.security.version>
+      <spring.security.version>5.2.10.RELEASE</spring.security.version>
       <!--spring的版本锁定-->
       <spring.version>5.0.2.RELEASE</spring.version>
         <!--cas服务器的版本锁定-->
