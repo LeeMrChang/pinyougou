@@ -20,7 +20,7 @@
       <!--安全框架的版本锁定-->
       <spring.security.version>5.0.0.RELEASE</spring.security.version>
       <!--spring的版本锁定-->
-      <spring.version>5.0.2.RELEASE</spring.version>
+      <spring.version>5.3.18</spring.version>
         <!--cas服务器的版本锁定-->
       <cas-client.version>3.3.3</cas-client.version>
   </properties>
